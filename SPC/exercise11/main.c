@@ -1,17 +1,37 @@
 #include <stdio.h>
+#include <ctype.h>
 
-int main() {
-  int ch;
-  int numch = 0;
+int main()
+{
+  char input;
+  int checkSpace = 1;
 
-  while (1) {
-    ch = getchar();
-    if (ch == '\n') {
-      break;
+  printf("Enter your full name: \n");
+
+  while ((input = getchar()) != '\n')
+  {
+    if (isalpha(input))
+    {
+      if (checkSpace)
+      {
+        putchar(toupper(input));
+        checkSpace = 0;
+      }
+      else
+      {
+        putchar(tolower(input));
+      }
     }
-    numch++;
+    else if (input == ' ')
+    {
+      if (!checkSpace)
+      {
+        putchar(' ');
+        checkSpace = 1;
+      }
+    }
   }
 
-  printf("%d\n", numch);
+  putchar('/n');
   return 0;
 }
