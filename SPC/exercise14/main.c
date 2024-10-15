@@ -1,28 +1,30 @@
 #include <stdio.h>
 #include <math.h>
 
-int main()
+int primeCheck(int num)
 {
-    int num = 54;
-    int primeCheck = 0;
-    int square = sqrt(num);
     if (num <= 1)
-        primeCheck = 0;
+        return 0;
     if (num == 2)
-        primeCheck = 1;
+        return 1;
     if (num % 2 == 0)
-        primeCheck = 0;
-    for (int i = 3; i <= square; i += 2)
+        return 0;
+    for (int i = 3; i <= sqrt(num); i += 2)
     {
         if (num % i == 0)
         {
-            primeCheck = 0;
+            return 0;
         }
-        else
-            primeCheck = 1;
     }
+    return 1;
+}
 
-    printf("Given number %d %s a prime number.\n", num, primeCheck == 1 ? "is" : "is not");
+int main()
+{
+    int num = 0;
+    printf("Input a number 0 - 1000 ");
+    scanf("%d", &num);
+    printf("Given number %d %s a prime number", num, primeCheck(num) ? "is" : "is not");
 
     return 0;
 }
