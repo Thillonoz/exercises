@@ -3,22 +3,14 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-int isInArray(int arr[], int size, int guess);
-
 int main()
 {
     srand(time(0));
     int guess = 0;
     char gameState = 'y';
-    int arr[99];
+
     int validInput = 0;
 
-    for (int i = 0; i < 100; i++)
-    {
-        arr[i] = i;
-    }
-    int size = sizeof(arr) / sizeof(arr[0]);
-    int array[size];
     int randomNum = rand() % 100;
     while (gameState == 'y')
     {
@@ -66,16 +58,4 @@ int main()
         scanf(" %c", &gameState);
     }
     return 0;
-}
-
-int isInArray(int arr[], int size, int guess)
-{
-    for (int i = 0; i < size; i++)
-    {
-        if (arr[i] == guess)
-        {
-            return 1; // Number found
-        }
-    }
-    return 0; // Number not found
 }
