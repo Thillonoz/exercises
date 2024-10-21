@@ -31,7 +31,6 @@ int main()
       }
     }
   }
-
-  putchar('/n');
+  printf("\n");
   return 0;
 }
