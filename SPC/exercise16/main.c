@@ -9,22 +9,25 @@ int main()
     srand(time(NULL));
     int unsorted[10];
     int randomNumber = rand() % 100 + 1;
-    for (int i = 0; i < 10; i++)
+    printf("The array filled with random numbers: {");
+    for (int i = 0; i < 9; i++)
     {
 
         randomNumber = rand() % 100 + 1;
         unsorted[i] = randomNumber;
+        printf("%d, ", unsorted[i]);
     }
+    printf("%d}\n", unsorted[9]);
 
     int arrLength = (sizeof(unsorted) / sizeof(unsorted[0]));
 
     bubbleSort(unsorted, arrLength);
-
+    printf("The sorted array: {");
     for (int i = 0; i <= arrLength - 2; i++)
     {
         printf("%d, ", unsorted[i]);
     }
-    printf("%d.\n", unsorted[9]);
+    printf("%d}\n", unsorted[9]);
 
     return 0;
 }
