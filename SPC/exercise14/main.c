@@ -22,9 +22,16 @@ int primeCheck(int num)
 int main()
 {
     int num = 0;
+
     printf("Input a number 0 - 1000 ");
     scanf("%d", &num);
-    printf("Given number %d %s a prime number", num, primeCheck(num) ? "is" : "is not");
 
+    while (primeCheck(num) != 1)
+    {
+        printf("Given number %d is not a prime number. Please try again.\n", num);
+        scanf("%d", &num);
+        primeCheck(num);
+    }
+    printf("Congratulations, %d is a prime number!.\n", num);
     return 0;
 }
