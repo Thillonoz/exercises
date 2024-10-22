@@ -1,24 +1,25 @@
 #include <stdio.h>
+#include <string.h>
 
 int main()
 {
     char array[20];
     char arrayReverse[20];
+    int stringLength = 0;
+    printf("Please input a string to get it in reverse: ");
+    scanf("%s", &array);
 
-    printf("Please input a string to get it in reverse. ");
-    // scanf("%s", &array);
-    while (getchar() != '\n')
-        ;
-
-    int count = sizeof(array) - 1;
-    printf("%d", count);
-    /*for (int i = 0; i < sizeof(array) - 1; i++)
+    stringLength = strlen(array);
+    int j = stringLength - 1;
+    for (int i = 0; i < stringLength; i++)
     {
-        arrayReverse[i + sizeof(array) - 1] = array[i];
+
+        arrayReverse[i] = array[j];
+        j--;
     }
 
-    printf("%s\n", array);
-    printf("%s\n", arrayReverse);*/
+    printf("Reversed string: ");
+    printf("%s\n", arrayReverse);
 
     return 0;
 }
