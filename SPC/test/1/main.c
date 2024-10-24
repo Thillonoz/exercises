@@ -1,31 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 
-struct car
+int main(void)
 {
-    char brand[10];
-    char model[10];
-    char color[10];
-} car1;
+    int var = 5;
+    int *point = &var;
+    int **ptr = &point;
 
-struct date
-{
-    int year;
-    int month;
-    int day;
-    char person[20];
-    struct car car1;
-} christmas;
+    printf("Value of var: %d\n", var);
+    printf("Address of var: %p\n", &var);
+    printf("Value of pointer: %d\n", *point);
+    printf("Address of pointer: %p\n", &point);
+    printf("Value of pointer-pointer: %d\n", **ptr);
+    printf("Address of pointer-pointer: %p\n", &ptr);
 
-int main()
-{
-    christmas.year = 2024, christmas.month = 12, christmas.day = 24;
-    strcpy(christmas.car1.brand, "Volvo");
-    strcpy(christmas.car1.model, "V70");
-    strcpy(christmas.car1.color, "Silver");
+    printf("Size of var: %d\n", sizeof(var));
+    printf("Size of pointer: %d\n", sizeof(*point));
+    printf("Size of pointer-pointer: %d\n", sizeof(**ptr));
 
-    strcpy(christmas.person, "Santa Claus");
-    printf("%04d-%02d-%02d\nAnd who comes that day? %s\n", christmas.year, christmas.month, christmas.day, christmas.person);
-    printf("And he's gonna drive a %s %s %s\n", christmas.car1.color, christmas.car1.brand, christmas.car1.model);
     return 0;
 }
