@@ -1,23 +1,23 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
 
-int var[5] = {1, 2, 3, 4, 5};
+#define MAX_STR_LEN 25
+
+void foo(char string[MAX_STR_LEN]);
+
 int main(void)
 {
-    int *ptr = var;
-    printf("\nOriginal elements, printed.\n");
-    for (int i = 0; i < (sizeof(var) / sizeof(var[0])); i++)
-    {
-        printf("%d ", var[i]); // Show the elements in the array
-    }
-    printf("\nModified elements, printed.\n");
-    for (int i = 0; i < (sizeof(var) / sizeof(var[0])); i++)
-    {
-        *(ptr + i) = 20;     // Modify the elements
-        printf("%d ", *ptr); // Print the new elements
-    }
+
+    char string[MAX_STR_LEN] = "Hello world.";
+    foo(string);
 
     return 0;
+}
+
+void foo(char string[MAX_STR_LEN])
+{
+    for (int i = 0; i < MAX_STR_LEN; i++)
+    {
+        (void)printf("%c", string[i]);
+    }
+    (void)printf("\n");
 }
