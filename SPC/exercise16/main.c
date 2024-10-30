@@ -15,6 +15,7 @@ int main()
 
         randomNumber = rand() % 100 + 1;
         unsorted[i] = randomNumber;
+        
         printf("%d, ", unsorted[i]);
     }
     printf("%d}\n", unsorted[9]);

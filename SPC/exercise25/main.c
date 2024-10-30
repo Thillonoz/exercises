@@ -1,3 +1,14 @@
+/**
+ * @file main.c
+ * @author Emil Ivarsson (emilivarsson92@gmail.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-10-30
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -5,33 +16,45 @@
 
 #define ARRAY_SIZE 10
 
-int *randomNumbers(void);
-void bubbleSort(uint8_t unsorted);
+static uint8_t *randomNumbers(void);
+void printNumbers(uint8_t *);
 
 int main()
 {
-    int arr[10] = {0};
-    srand(time(NULL));
-    *arr = *randomNumbers();
-    for (int i = 0; i < ARRAY_SIZE; i++)
-    {
 
-        (void)printf("%d\t", arr[i]);
-    }
+    printNumbers(randomNumbers());
+
     (void)printf("\n");
     return 0;
 }
 
-int *randomNumbers(void)
+static uint8_t *randomNumbers(void)
 {
-
-    int arr[10] = {0};
-    // uint8_t random = 0;
-    for (int i = 0; i < ARRAY_SIZE; i++)
+    static uint8_t arr[ARRAY_SIZE] = {0};
+    srand(time(NULL));
+    // printf("These are the random numbers: \n");
+    for (uint8_t i = 0; i < 10; i++)
     {
-        int random = rand() % 100;
-        arr[i] = random;
-        (void)printf("%d\t", arr[i]);
+        arr[i] = rand() % 100;
+        //(void)printf("%d\t", arr[i]);
+        for (uint8_t j = 0; j < ARRAY_SIZE; j++)
+        {
+            if (arr[j] == arr[i])
+            {
+                arr[i] = rand() % 100;
+            }
+        }
     }
     (void)printf("\n");
+    return arr;
+}
+
+void printNumbers(uint8_t *arr)
+{
+
+    printf("These are the array numbers: \n");
+    for (uint8_t i = 0; i < ARRAY_SIZE; i++)
+    {
+        (void)printf("%d\t", arr[i]);
+    }
 }
