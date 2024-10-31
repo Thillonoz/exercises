@@ -1,3 +1,14 @@
+/**
+ * @file main.c
+ * @author Emil Ivarsson (emilivarsson92@gmail.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-10-31
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
@@ -24,14 +35,14 @@ int main()
 {
     uint8_t m = 23;
     uint8_t n = 243;
+    uint8_t printing = 0;
     for (int i = m; i < n; i++)
     {
+        printing = i;
         if (primePrint(i))
         {
-            /* code */
+            printf("%hhu\t", printing);
         }
-
-        primePrint(i);
     }
     return 0;
 }
