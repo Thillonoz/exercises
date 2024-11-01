@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdint.h>
 
-int primePrint(int num)
+int primeCheck(int num)
 {
     if (num <= 1)
         return 0;
@@ -39,7 +39,7 @@ int main()
     for (int i = m; i < n; i++)
     {
         printing = i;
-        if (primePrint(i))
+        if (primeCheck(i))
         {
             printf("%hhu\t", printing);
         }
