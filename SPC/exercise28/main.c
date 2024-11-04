@@ -11,7 +11,6 @@
 
 #include <stdio.h>
 #include <stdint.h>
-#include <string.h>
 
 #define MAX_LEN 15
 

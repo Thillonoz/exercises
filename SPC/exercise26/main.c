@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#define NAME_LEN 16
 typedef struct
 {
 
@@ -18,11 +19,11 @@ typedef struct
 
     float height;
 
-    char name[16];
+    char name[NAME_LEN];
 
 } person_t;
 
-person_t get_person();
+static person_t get_person(void);
 
 int main()
 {
@@ -35,11 +36,12 @@ int main()
     return 0;
 }
 
-person_t get_person()
+static person_t get_person(void)
 {
     person_t person;
-    printf("Enter name (max 15 characters): ");
-    fgets(person.name, 15, stdin);
+    char input = 0;
+    printf("Enter name (max %d characters): ", NAME_LEN - 1);
+    fgets(person.name, NAME_LEN, stdin);
     size_t length = strlen(person.name);
     if (length > 0 && person.name[length - 1] == '\n')
     {
