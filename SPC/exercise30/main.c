@@ -1,3 +1,13 @@
+/**
+ * @file main.c
+ * @author Emil Ivarsson (emilivarsson92@gmail.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-11-04
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include <stdio.h>
 void add(int *aptr);
 void say_value(int a);
@@ -9,29 +19,30 @@ int main(void)
 
     int *pa = &a;
     char *pb = &b;
-
-    printf("Original value of variable b: %c\n", *pb);
-    printf("Now change this using a character: ");
+    (void)printf("Original value of variable b: %c\n", *pb);
+    (void)printf("Now change this using a character: ");
     scanf("%c", pb);
-    printf("Modified value: %c\n", *pb);
-    printf("Original value of variable a: %d\n", *pa);
-    printf("Now change this using a integer: ");
+    (void)printf("Modified value: %c\n", *pb);
+    (void)printf("Original value of variable a: %d\n", *pa);
+    (void)printf("Now change this using a integer: ");
     scanf("%d", pa);
-    printf("Modified value: %d\n", *pa);
-    printf("Now lets try to add 5 to that integer\n");
+    (void)printf("Modified value: %d\n", *pa);
+    (void)printf("Now lets try to add 5 to that integer\n");
     add(pa);
+    void (*funcptr)(int);
+    funcptr = say_value;
+    funcptr(32);
 
-    void *(funcptr)(int) = say_value;
     return 0;
 }
 
 void add(int *aptr)
 {
     *aptr += 5;
-    printf("%d\n", *aptr);
+    (void)printf("%d\n", *aptr);
 }
 
 void say_value(int a)
 {
-    printf("Value of a is %d\n", a);
+    (void)printf("Value of a is %d\n", a);
 }
