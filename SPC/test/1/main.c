@@ -1,22 +1,28 @@
 #include <stdio.h>
-#include <string.h>
+
+#define MAX_STR_LEN 50
+int strLen(char *strptr);
 
 int main(void)
 {
-    int var = 5;
-    int *point = &var;
-    int **ptr = &point;
+    char string[MAX_STR_LEN];
+    printf("Type your string here.\n");
+    // scanf("%s", &string);
+    fgets(string, MAX_STR_LEN, stdin);
 
-    printf("Value of var: %d\n", var);
-    printf("Address of var: %p\n", &var);
-    printf("Value of pointer: %d\n", *point);
-    printf("Address of pointer: %p\n", &point);
-    printf("Value of pointer-pointer: %d\n", **ptr);
-    printf("Address of pointer-pointer: %p\n", &ptr);
+    char *strptr;
+    strptr = string;
 
-    printf("Size of var: %d\n", sizeof(var));
-    printf("Size of pointer: %d\n", sizeof(*point));
-    printf("Size of pointer-pointer: %d\n", sizeof(**ptr));
-
+    int length = strLen(strptr);
+    printf("%d\n", length);
     return 0;
+}
+int strLen(char *strptr)
+{
+    int i = 0;
+    while (strptr[i] != '\0')
+    {
+        i++;
+    }
+    return i - 1; //Return i - 1 to get rid of the newline character
 }
