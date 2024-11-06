@@ -13,64 +13,85 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #define MAX_ARRAY_SIZE 10
-#define MIN_VALUE 0
-#define MAX_VALUE 99
 
-int array[MAX_ARRAY_SIZE] = {0};
-
-static int *randomNumbers(void);
+void randomNumbers(int *arr);
 void printNumbers(int *array);
-void swap(uint8_t x, uint8_t y);
+void swap(int *x, int *y);
+typedef bool (*compare_t)(int, int);
+void sort_array(int *arr, compare_t compare);
+bool compare_asc(int a, int b);
+bool compare_desc(int a, int b);
 
 int main(void)
 {
-    uint8_t var = 10;
-    uint8_t var1 = 15;
-    printNumbers(randomNumbers());
-    (void)printf("\n");
-    swap(var, var1);
+    // Initializing the array, filling the array with random numbers and printing them
+    int arr[MAX_ARRAY_SIZE] = {0};
+    randomNumbers(arr);
+    printf("Original array: \n");
+    printNumbers(arr);
+
+    // Sorting the array in an ascending order and printing them
+    sort_array(arr, compare_asc);
+    (void)printf("Sorted array (ascending):\n");
+    printNumbers(arr);
+
+    // Sorting the array in descending order and printing them
+    sort_array(arr, compare_desc);
+    (void)printf("Sorted array (descending):\n");
+    printNumbers(arr);
+
     return 0;
 }
 
-static int *randomNumbers(void)
+void randomNumbers(int *arr)
 {
     srand(time(NULL));
-    // This is where the random numbers are getting generated and stored in the array
     for (int i = 0; i < MAX_ARRAY_SIZE; i++)
     {
-        *(array + i) = rand() % 100;
-        // This is where I check the number just generated so it doesn't match any other in the array, creating a new one if it finds it already in the array
-        for (int j = 0; j < MAX_ARRAY_SIZE; j++)
+        *(arr + i) = rand() % 100;
+    }
+}
+
+void printNumbers(int *arr)
+{
+    for (size_t i = 0; i < MAX_ARRAY_SIZE; i++)
+    {
+        (void)printf("%d\t", *(arr + i));
+    }
+    (void)printf("\n");
+}
+
+void swap(int *x, int *y)
+{
+    uint8_t temp = 0;
+    temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+void sort_array(int *arr, compare_t compare)
+{
+    for (size_t i = 0; i < MAX_ARRAY_SIZE - 1; i++)
+    {
+        for (size_t j = 0; j < MAX_ARRAY_SIZE - i - 1; j++)
         {
-            if (*(array + j) == *(array + i))
+            if (compare(*(arr + j), *(arr + j + 1)))
             {
-                *(array + i) = rand() % 100;
+                swap(arr + j, arr + j + 1);
             }
         }
     }
-
-    return array;
 }
 
-void printNumbers(int *array)
+bool compare_asc(int a, int b)
 {
-    printf("These are the array numbers: \n");
-    for (int i = 0; i < MAX_ARRAY_SIZE; i++)
-    {
-        (void)printf("%d\t", *(array + i));
-    }
+    return a > b;
 }
 
-void swap(uint8_t x, uint8_t y)
+bool compare_desc(int a, int b)
 {
-    (void)printf("Before the swap, these are the values of var (x in this scope), and var1 (y in this scope).\n");
-    (void)printf("Value of x: %u\nValue of y: %u\n", x, y);
-    uint8_t temp = 0;
-    temp = x;
-    x = y;
-    y = temp;
-    (void)printf("After the swap, this is now the values\n");
-    (void)printf("Value of x: %u\nValue of y: %u\n", x, y);
+    return a < b;
 }
