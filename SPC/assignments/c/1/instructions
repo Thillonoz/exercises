@@ -1,0 +1,17 @@
+1.The numbers in the birth date and the birth number are alternately multiplied by 2 and 1.
+
+2.Sum all the digits in each product.
+
+    a.If a product is larger than 9, each digit in the number is used.
+    b.For example, 13 will be 1 + 33.
+
+The first digit of the sum is subtracted from 104.
+The remainder of the division of the result of the previous step by 10 is the control bit.
+
+5.For example:
+811218-987
+    a.  8×2     + 1×1   + 1×2     + 2×1    + 1×2    + 8×1   + 9×2    + 8×1     + 7×2
+    b.  16        1        2         2        2        8       18        8       14
+    c. (1+6)    + 1      +  2   +    2   +   2  +      8    + (1+8) +    8    + (1+4) = 44
+    d.The control digit (C) is (10 - (44 % 10)) % 10 = 6
+    e.So the personnummer is811218-9876
