@@ -5,8 +5,9 @@
     a.If a product is larger than 9, each digit in the number is used.
     b.For example, 13 will be 1 + 33.
 
-The first digit of the sum is subtracted from 104.
-The remainder of the division of the result of the previous step by 10 is the control bit.
+The first digit of the sum is subtracted from 10
+
+4. The remainder of the division of the result of the previous step by 10 is the control bit.
 
 5.For example:
 811218-987
