@@ -1,90 +1,104 @@
 #include <stdio.h>
-#include <string.h>
+#include <stdbool.h>
 #include <ctype.h>
 
-#define LENGTH 13 // Expected length of personnummer in format "YYMMDD-nnnC"
+#define FORMAT "YYMMDD-NNNN" // Define the correct format
+#define PERS_NUM_LEN 10      // The number of digits in a swedish personnummer
+#define INPUT_LEN 11         // It's one more than the personnummer to accomodate for the '-' character
 
-int calculate_control_digit(const char *personnummer)
+// Define year, month and day min-max range to prevent incorrect input
+#define YEAR_MIN 47 // 1947 was the first year with swedish personnummer
+#define MONTH_MIN 1
+#define MONTH_MAX 12
+#define DAY_MIN 1
+#define DAY_MAX 31
+
+void clearBuffer(void);
+bool checkPersonalNumber(const int *personNummer);
+
+int main(void)
 {
-    int multipliers[] = {2, 1}; // Alternating multipliers 2 and 1
-    int sum = 0;
-    int multiplier_index = 0;
+    char input[INPUT_LEN];
+    int year, month, day, serial; // Variables to seperate the input
+    int parsedInput[INPUT_LEN];
+    bool result = false;
 
-    for (int i = 0; i < 10; i++)
+    // Prompt the user about what the program is about and what's expected as an input
+    (void)printf("Please input your personnummer (%s) to check if it's valid: \n", FORMAT);
+    scanf("%s", &input);
+
+    // Use sscanf to parse the input
+    if (sscanf(input, "%2d%02d%02d-%4d", &year, &month, &day, &serial) == 4)
     {
-        int digit = personnummer[i] - '0'; // Convert char to int
-        if (i == 6)
-            i++; // Skip the dash ('-') at position 6
 
-        int product = digit * multipliers[multiplier_index];
-        multiplier_index = 1 - multiplier_index; // Alternate between 2 and 1
-
-        // If product > 9, split the digits and sum them
-        if (product > 9)
+        // Check for valid month and day ranges
+        if (year < YEAR_MIN)
         {
-            sum += (product / 10) + (product % 10);
+            (void)printf("Invalid date. Please try again. (%s)\n", FORMAT);
+            clearBuffer();
         }
-        else
+
+        if (month < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
         {
-            sum += product;
+            (void)printf("Invalid date. Please try again. (%s)\n", FORMAT);
+            // Clear any remaining characters in the input buffer
+            clearBuffer();
+
+            return 0;
         }
-    }
 
-    // Calculate control digit
-    int control_digit = (10 - (sum % 10)) % 10;
-    return control_digit;
-}
+        // This loop is converting what the user put in as char and making it int
+        // and converts the ascii representation of the input by subtracting '0' from each element
+        for (int i = 0; i < INPUT_LEN; i++)
+        {
+            parsedInput[i] = input[i] - '0';
+        }
+        (void)printf("\n");
 
-int is_valid_format(const char *personnummer)
-{
-    // Check if length matches
-    if (strlen(personnummer) != LENGTH)
+        // Call to the function checking input
+        result = checkPersonalNumber(parsedInput);
+
+        // Display the result of the check
+
+        (void)printf("It's %s match!\n", result == true ? "a" : "not a");
+
+        (void)printf("\n");
+
         return 0;
-
-    // Check specific positions for digits and dash
-    for (int i = 0; i < LENGTH; i++)
-    {
-        if (i == 6)
-        {
-            if (personnummer[i] != '-')
-                return 0;
-        }
-        else
-        {
-            if (!isdigit(personnummer[i]))
-                return 0;
-        }
-    }
-    return 1;
-}
-
-int main()
-{
-    char personnummer[LENGTH + 1];
-
-    printf("Enter a Swedish personnummer (YYMMDD-nnnC): ");
-    scanf("%s", personnummer);
-
-    // Validate format
-    if (!is_valid_format(personnummer))
-    {
-        printf("Invalid format!\n");
-        return 1;
-    }
-
-    // Calculate control digit
-    int calculated_control_digit = calculate_control_digit(personnummer);
-    int entered_control_digit = personnummer[12] - '0'; // Last character is control digit
-
-    // Compare control digits
-    if (calculated_control_digit == entered_control_digit)
-    {
-        printf("The personnummer is valid.\n");
     }
     else
     {
-        printf("The personnummer is invalid.\n");
+        printf("Incorrect input, try again (%s)\n", FORMAT);
+    }
+}
+void clearBuffer(void)
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
+}
+// The function to do the arithmetic for finding the check digit
+bool checkPersonalNumber(const int *personNummer)
+{
+    int checkDigit = 0;
+    int product = 0;
+
+    for (int i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
+    {
+        if (i == 6) // Skip the '-'
+        {
+            j++;
+        }
+
+        // Arithmetic for the PIN, alternate multiply by 2 and 1
+        product = (i % 2 == 0) ? personNummer[j] * 2 : personNummer[j];
+
+        // Add digits for numbers >= 10
+        checkDigit += (product >= 10) ? product / 10 + product % 10 : product;
     }
 
-    return 0;
+    // Calculate the check digit
+    checkDigit = (10 - (checkDigit % 10)) % 10;
+
+    return (checkDigit == personNummer[PERS_NUM_LEN]);
 }
