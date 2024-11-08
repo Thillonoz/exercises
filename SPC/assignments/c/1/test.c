@@ -1,89 +1,91 @@
+/**
+ * @file main.c
+ * @author Emil Ivarsson (emilivarsson92@gmail.com)
+ * @brief A program to check and validate a user input swedish personal number
+ * @version 0.1
+ * @date 2024-11-08
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #include <stdio.h>
 #include <stdbool.h>
-#include <ctype.h>
+#include <stdint.h>
 
-#define FORMAT "YYMMDD-NNNN" // Define the correct format
-#define PERS_NUM_LEN 10      // The number of digits in a swedish personnummer
-#define INPUT_LEN 11         // It's one more than the personnummer to accomodate for the '-' character
-
-// Define year, month and day min-max range to prevent incorrect input
-#define YEAR_MIN 47 // 1947 was the first year with swedish personnummer
+#define FORMAT "YYMMDD-NNNN" // Expected format
+#define ERROR "Invalid input, try again\n"
+#define PERS_NUM_LEN 10 // The number of digits in a swedish personal number
+#define INPUT_LEN 11    // Number of digits + '-'
+#define YEAR_MIN 47     // 1947 is the start year for personal numbers
 #define MONTH_MIN 1
 #define MONTH_MAX 12
 #define DAY_MIN 1
 #define DAY_MAX 31
 
 void clearBuffer(void);
-bool checkPersonalNumber(const int *personNummer);
+void errorMsg(void);
+bool checkPersonalNumber(const int8_t *personNumber);
 
 int main(void)
 {
-    char input[INPUT_LEN];
-    int year, month, day, serial; // Variables to seperate the input
-    int parsedInput[INPUT_LEN];
+    char input[INPUT_LEN] = {0};
+    int8_t year = 0, month = 0, day = 0, serial = 0;
+    int8_t parsedInput[INPUT_LEN] = {0};
     bool result = false;
 
-    // Prompt the user about what the program is about and what's expected as an input
-    (void)printf("Please input your personnummer (%s) to check if it's valid: \n", FORMAT);
-    scanf("%s", &input);
+    // Prompt the user for input
+    (void)printf("Please enter your personal number (%s) to check if it's valid: \n", FORMAT);
+
+    // Check if scanf succeeds in reading the input
+    if (scanf("%11s", input) != 1)
+    {
+        errorMsg();
+        return 0;
+    }
 
     // Use sscanf to parse the input
-    if (sscanf(input, "%2d%02d%02d-%4d", &year, &month, &day, &serial) == 4)
+    if (sscanf(input, "%2hhd%02hhd%02hhd-%4hhd", &year, &month, &day, &serial) == 4)
     {
-
-        // Check for valid month and day ranges
-        if (year < YEAR_MIN)
+        // Check date range and display an error if invalid
+        if (year < YEAR_MIN || year < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
         {
-            (void)printf("Invalid date. Please try again. (%s)\n", FORMAT);
-            clearBuffer();
-        }
-
-        if (month < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
-        {
-            (void)printf("Invalid date. Please try again. (%s)\n", FORMAT);
-            // Clear any remaining characters in the input buffer
-            clearBuffer();
-
+            errorMsg();
             return 0;
         }
 
-        // This loop is converting what the user put in as char and making it int
-        // and converts the ascii representation of the input by subtracting '0' from each element
-        for (int i = 0; i < INPUT_LEN; i++)
+        // Convert input characters to integers
+        for (size_t i = 0; i < INPUT_LEN; i++)
         {
             parsedInput[i] = input[i] - '0';
         }
-        (void)printf("\n");
 
-        // Call to the function checking input
+        // Validate the personal number and display result
         result = checkPersonalNumber(parsedInput);
-
-        // Display the result of the check
-
         (void)printf("It's %s match!\n", result == true ? "a" : "not a");
-
-        (void)printf("\n");
-
-        return 0;
     }
     else
     {
-        printf("Incorrect input, try again (%s)\n", FORMAT);
+        errorMsg();
     }
+    return 0;
 }
+// Clears the input buffer
 void clearBuffer(void)
 {
-    int c;
+    int8_t c;
     while ((c = getchar()) != '\n' && c != EOF)
         ;
 }
-// The function to do the arithmetic for finding the check digit
-bool checkPersonalNumber(const int *personNummer)
+void errorMsg(void)
 {
-    int checkDigit = 0;
-    int product = 0;
-
-    for (int i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
+    (void)printf("Invalid input, try again(%s)\n", FORMAT);
+    clearBuffer();
+}
+// Validates Swedish personal number check digit
+bool checkPersonalNumber(const int8_t *personNumber)
+{
+    int8_t checkDigit = 0, product = 0;
+    for (size_t i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
     {
         if (i == 6) // Skip the '-'
         {
@@ -91,14 +93,13 @@ bool checkPersonalNumber(const int *personNummer)
         }
 
         // Arithmetic for the PIN, alternate multiply by 2 and 1
-        product = (i % 2 == 0) ? personNummer[j] * 2 : personNummer[j];
+        product = (i % 2 == 0) ? personNumber[j] * 2 : personNumber[j];
 
         // Add digits for numbers >= 10
         checkDigit += (product >= 10) ? product / 10 + product % 10 : product;
     }
 
-    // Calculate the check digit
     checkDigit = (10 - (checkDigit % 10)) % 10;
 
-    return (checkDigit == personNummer[PERS_NUM_LEN]);
+    return (checkDigit == personNumber[PERS_NUM_LEN]);
 }

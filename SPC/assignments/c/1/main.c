@@ -10,7 +10,7 @@
  */
 #include <stdio.h>
 #include <stdbool.h>
-#include <ctype.h>
+#include <stdint.h>
 
 #define FORMAT "YYMMDD-NNNN" // Expected format
 #define PERS_NUM_LEN 10      // The number of digits in a swedish personal number
@@ -27,7 +27,7 @@ bool checkPersonalNumber(const int *personNumber);
 int main(void)
 {
     char input[INPUT_LEN] = {0};
-    int year = 0, month = 0, day = 0, serial = 0;
+    int8_t year = 0, month = 0, day = 0, serial = 0;
     int parsedInput[INPUT_LEN] = {0};
     bool result = false;
 
@@ -43,7 +43,7 @@ int main(void)
     }
 
     // Use sscanf to parse the input
-    if (sscanf(input, "%2d%02d%02d-%4d", &year, &month, &day, &serial) == 4)
+    if (sscanf(input, "%2hhd%02hhd%02hhd-%4hhd", &year, &month, &day, &serial) == 4)
     {
         // Check date range and display an error if invalid
         if (year < YEAR_MIN || year < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
@@ -54,7 +54,7 @@ int main(void)
         }
 
         // Convert input characters to integers
-        for (int i = 0; i < INPUT_LEN; i++)
+        for (size_t i = 0; i < INPUT_LEN; i++)
         {
             parsedInput[i] = input[i] - '0';
         }
@@ -72,16 +72,16 @@ int main(void)
 // Clears the input buffer
 void clearBuffer(void)
 {
-    int c;
+    int8_t c;
     while ((c = getchar()) != '\n' && c != EOF)
         ;
 }
 // Validates Swedish personal number check digit
 bool checkPersonalNumber(const int *personNumber)
 {
-    int checkDigit = 0, product = 0;
-
-    for (int i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
+    int8_t checkDigit = 0, product = 0;
+    printf("%ld", sizeof(checkDigit));
+    for (size_t i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
     {
         if (i == 6) // Skip the '-'
         {
