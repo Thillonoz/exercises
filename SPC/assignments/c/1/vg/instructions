@@ -1,0 +1,12 @@
+Make a program to checksum a message and verify the checksummed message using
+CRC according to the requirements below.
+  
+Requirements 
+
+1. The message is an N -element array of type uint8_t . 
+2. The minimum length of the message is 1 byte. 
+3. The maximum length of the message is 14 bytes. 
+4. The CRC-15 polynomial is 0xC599 (1100010110011001) 
+5. The message is processed from the first element to the last element in the array 
+6. Each element of the message is processed from the LSB to the MSB
+7. Use the bitwise operators and avoid having magic numbers!
