@@ -15,4 +15,4 @@ The first digit of the sum is subtracted from 10
     b.  16        1        2         2        2        8       18        8       14
     c. (1+6)    + 1      +  2   +    2   +   2  +      8    + (1+8) +    8    + (1+4) = 44
     d.The control digit (C) is (10 - (44 % 10)) % 10 = 6
-    e.So the personnummer is811218-9876
+    e.So the personnummer is 811218-9876
