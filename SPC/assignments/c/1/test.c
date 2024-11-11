@@ -12,44 +12,46 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define FORMAT "YYMMDD-NNNN" // Expected format
-#define ERROR "Invalid input, try again\n"
+#define FORMAT "YYMMDD-nnnC" // Expected format
+#define ERROR "Invalid input, try again (%s)\n"
 #define PERS_NUM_LEN 10 // The number of digits in a swedish personal number
 #define INPUT_LEN 11    // Number of digits + '-'
-#define YEAR_MIN 47     // 1947 is the start year for personal numbers
 #define MONTH_MIN 1
 #define MONTH_MAX 12
 #define DAY_MIN 1
 #define DAY_MAX 31
 
-void clearBuffer(void);
-void errorMsg(void);
-bool checkPersonalNumber(const int8_t *personNumber);
+bool isLeapYear(uint8_t year);
+bool isValidDate(uint8_t year, uint8_t month, uint8_t day);
+bool checkPersonalNumber(const uint8_t *personNumber);
 
 int main(void)
 {
     char input[INPUT_LEN] = {0};
-    int8_t year = 0, month = 0, day = 0, serial = 0;
-    int8_t parsedInput[INPUT_LEN] = {0};
+    uint8_t year = 0, month = 0, day = 0, serial = 0;
+    uint8_t parsedInput[INPUT_LEN] = {0};
     bool result = false;
 
-    // Prompt the user for input
     (void)printf("Please enter your personal number (%s) to check if it's valid: \n", FORMAT);
 
-    // Check if scanf succeeds in reading the input
+    // Limits the input and checks if scanf succeeds in reading the input
     if (scanf("%11s", input) != 1)
     {
-        errorMsg();
+        (void)printf(ERROR, FORMAT);
         return 0;
     }
 
     // Use sscanf to parse the input
-    if (sscanf(input, "%2hhd%02hhd%02hhd-%4hhd", &year, &month, &day, &serial) == 4)
+    if (sscanf(input, "%2hhu%2hhu%2hhu-%4hhu", &year, &month, &day, &serial) == 4)
     {
-        // Check date range and display an error if invalid
-        if (year < YEAR_MIN || year < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
+        printf("%hhu", year);
+        // Convert 2-digit year to 4-digit by adding 1900 or 2000 (assuming 00-99 as 1900-1999 or 2000-2099)
+        uint8_t full_year = (year <= 99) ? (year >= 24 ? 1900 + year : 2000 + year) : year;
+
+        // Validate the date and display an error if invalid
+        if (!isValidDate(full_year, month, day))
         {
-            errorMsg();
+            (void)printf(ERROR, FORMAT);
             return 0;
         }
 
@@ -61,30 +63,36 @@ int main(void)
 
         // Validate the personal number and display result
         result = checkPersonalNumber(parsedInput);
-        (void)printf("It's %s match!\n", result == true ? "a" : "not a");
+        (void)printf("The number %s valid!\n", result ? "is" : "is not");
     }
     else
     {
-        errorMsg();
+        (void)printf(ERROR, FORMAT);
     }
     return 0;
 }
-// Clears the input buffer
-void clearBuffer(void)
+
+// Checks if a year is a leap year
+bool isLeapYear(uint8_t year)
 {
-    int8_t c;
-    while ((c = getchar()) != '\n' && c != EOF)
-        ;
+    return (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0));
 }
-void errorMsg(void)
+
+// Validates if the given day is correct for the month and year
+bool isValidDate(uint8_t year, uint8_t month, uint8_t day)
 {
-    (void)printf("Invalid input, try again(%s)\n", FORMAT);
-    clearBuffer();
+    if (month < 1 || month > 12 || day < 1)
+        return false;
+
+    uint8_t days_in_month[] = {31, (isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    return day <= days_in_month[month - 1];
 }
+
 // Validates Swedish personal number check digit
-bool checkPersonalNumber(const int8_t *personNumber)
+bool checkPersonalNumber(const uint8_t *personNumber)
 {
-    int8_t checkDigit = 0, product = 0;
+    uint8_t checkDigit = 0, product = 0;
     for (size_t i = 0, j = 0; i < PERS_NUM_LEN - 1; i++, j++)
     {
         if (i == 6) // Skip the '-'
