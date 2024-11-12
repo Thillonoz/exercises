@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <ctype.h>
 
 #define FORMAT "YYMMDD-nnnC" // Expected format
 #define ERROR "Invalid input, try again (%s)\n"
@@ -39,6 +40,21 @@ int main(void)
     {
         (void)printf(ERROR, FORMAT);
         return 0;
+    }
+
+    // Checking that input is only numbers (except for the hyphen)
+    for (size_t i = 0; i < INPUT_LEN; i++)
+    {
+        if (i == 6) // Skip '-'
+        {
+            continue;
+        }
+
+        if (!isdigit(input[i]))
+        {
+            (void)printf(ERROR, FORMAT);
+            return 0;
+        }
     }
 
     // Use sscanf to parse the input
