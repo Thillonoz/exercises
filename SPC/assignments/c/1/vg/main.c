@@ -44,7 +44,7 @@ int verify_crc(const uint8_t *message, size_t length, uint16_t received_crc)
 
 int main()
 {
-    uint8_t message[] = {0x32, 0x45, 0x67}; // Example message
+    uint8_t message[] = {0x48, 0x65, 0x6C, 0x6C, 0x6F}; // Example message
     size_t length = sizeof(message) / sizeof(message[0]);
 
     // Compute CRC-15 for the message

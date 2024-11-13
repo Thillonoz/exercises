@@ -36,7 +36,7 @@ int main(void)
     if (scanf("%11s", input) != 1)
     {
         (void)printf(ERROR, FORMAT);
-        return 0;
+        return 1;
     }
 
     // Use sscanf to parse the input
@@ -46,7 +46,7 @@ int main(void)
         if (month < MONTH_MIN || month > MONTH_MAX || day < DAY_MIN || day > DAY_MAX)
         {
             (void)printf(ERROR, FORMAT);
-            return 0;
+            return 1;
         }
 
         // Convert input characters to integers

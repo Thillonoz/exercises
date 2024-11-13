@@ -3,7 +3,7 @@
  * @author Emil Ivarsson (emilivarsson92@gmail.com)
  * @brief
  * @version 0.1
- * @date 2024-11-06
+ * @date 2024-11-13
  *
  * @copyright Copyright (c) 2024
  *
@@ -48,11 +48,10 @@ int powerOf(int x, int y)
 {
     // Storing the result of the multiplication in this variable
     int result = x;
-    // To check the numbers given, if they're 0 nothing happens
-    if (x == 0 || y == 0)
+    if (y == 0)
     {
-        return 0;
+        return 1;
     }
-    // Doing the recursion, calling itself while multiplying x and y
-    return 1 + powerOf(x *= y, y);
+    // Recursive case: multiply x by the result of x^(y-1)
+    return x * powerOf(x, y - 1);
 }

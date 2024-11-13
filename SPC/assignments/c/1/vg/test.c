@@ -7,11 +7,9 @@
 int main(void)
 {
 
-    uint8_t test[MESSAGE_WIDTH] = "";
-
-    scanf("%hhu", &test);
-
-    printf("%x\n", test[0]);
+    uint8_t test[MESSAGE_WIDTH] = {0};
+    scanf("%hhu", test);
+    printf("%hhn\n", test);
 
     return 0;
 }
