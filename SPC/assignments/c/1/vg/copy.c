@@ -8,17 +8,16 @@
 static uint16_t compute_crc(const uint8_t *message, size_t length)
 {
     uint16_t crc = 0; // Initial CRC value (0 or all 1s is common)
-    uint8_t byte = 0;
-    uint8_t bit = 0;
+
     for (size_t i = 0; i < length; i++)
     {
-        byte = message[i];
+        uint8_t byte = message[i];
 
         // Process each bit in the byte, from LSB to MSB
         for (int j = 0; j < 8; j++)
         {
-            bit = byte & 1; // Extract the LSB
-            byte >>= 1;     // Shift to the next bit in the byte
+            uint8_t bit = byte & 1; // Extract the LSB
+            byte >>= 1;             // Shift to the next bit in the byte
 
             // Update the CRC by shifting left by 1 and XORing with the polynomial
             if ((crc & (1 << (CRC_WIDTH - 1))) ^ (bit << (CRC_WIDTH - 1)))
@@ -32,15 +31,13 @@ static uint16_t compute_crc(const uint8_t *message, size_t length)
         }
     }
 
-    return crc & 0x7FFF;
+    return crc;
 }
 
 // Function to verify CRC on a message with appended checksum
 static int verify_crc(const uint8_t *message, size_t length, uint16_t received_crc)
 {
     uint16_t computed_crc = compute_crc(message, length);
-    printf("0x%X\n", computed_crc);
-
     return (computed_crc == received_crc);
 }
 
