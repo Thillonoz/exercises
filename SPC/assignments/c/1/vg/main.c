@@ -1,61 +1,39 @@
-#include <stdint.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
-#define POLYNOMIAL 0xC599 // CRC-15 polynomial
-#define CRC_WIDTH 15      // Width of the CRC
+#define CRC_POLY 0xC599 // CRC-15 polynomial for CAN
+#define CRC_INITIAL_VALUE 0
 
-// Function to compute CRC-15 checksum
-static uint16_t compute_crc(const uint8_t *message, size_t length)
+uint16_t calculateCRC15(const char *data)
 {
-    uint16_t crc = 0; // Initial CRC value (0 or all 1s is common)
-    uint8_t byte = 0;
-    uint8_t bit = 0;
-    for (size_t i = 0; i < length; i++)
+    uint16_t crc = CRC_INITIAL_VALUE;
+    while (*data)
     {
-        byte = message[i];
+        unsigned char ch = *data++;
 
-        // Process each bit in the byte, from LSB to MSB
-        for (int j = 0; j < 8; j++)
+        for (int i = 7; i >= 0; i--)
         {
-            bit = byte & 1; // Extract the LSB
-            byte >>= 1;     // Shift to the next bit in the byte
+            // Shift in each bit of the character to the CRC
+            int bit = (ch >> i) & 1;
+            int crc_msb = (crc >> 14) & 1; // CRC MSB (15th bit of 16-bit CRC register)
 
-            // Update the CRC by shifting left by 1 and XORing with the polynomial
-            if ((crc & (1 << (CRC_WIDTH - 1))) ^ (bit << (CRC_WIDTH - 1)))
+            crc <<= 1; // Shift CRC left by 1
+            if (crc_msb ^ bit)
             {
-                crc = (crc << 1) ^ POLYNOMIAL;
-            }
-            else
-            {
-                crc <<= 1;
+                crc ^= CRC_POLY; // Apply polynomial if MSB of CRC and bit differ
             }
         }
     }
 
-    return crc & 0x7FFF;
-}
-
-// Function to verify CRC on a message with appended checksum
-static int verify_crc(const uint8_t *message, size_t length, uint16_t received_crc)
-{
-    uint16_t computed_crc = compute_crc(message, length);
-    printf("0x%X\n", computed_crc);
-
-    return (computed_crc == received_crc);
+    crc &= 0x7FFF; // Mask to 15 bits
+    return crc;
 }
 
 int main()
 {
-    uint8_t message[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; // Example message 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21 = 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!'
-    size_t length = sizeof(message) / sizeof(message[0]);
-
-    // Compute CRC-15 for the message
-    uint16_t crc = compute_crc(message, length);
-    printf("CRC-15 checksum: 0x%X\n", crc);
-
-    // Verify the CRC
-    int is_valid = verify_crc(message, length, crc);
-    printf("CRC verification: %s\n", is_valid ? "Passed" : "Failed");
-
+    uint8_t text[14] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0};
+    uint16_t crc15 = calculateCRC15(text);
+    printf("CRC-15 of \"%s\": 0x%04X\n", text, crc15);
     return 0;
 }

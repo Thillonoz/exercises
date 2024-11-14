@@ -1,67 +1,43 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define POLYNOMIAL 0xC599 // CRC polynomial (0xC599)
+#define POLY 0xC599          // CAN CRC-15 polynomial
+#define CRC_WIDTH 15         // Number of bits in CRC-15
+#define CRC_INIT 0x0000      // Initial CRC value for CAN CRC-15
+#define CRC_FINAL_XOR 0x0000 // Final XOR value if required
 
-// Function to calculate CRC for a given message (byte array) and polynomial
-uint16_t calculate_crc(const uint8_t *message, size_t length)
+uint16_t crc15(uint8_t *data, size_t length)
 {
-    uint16_t crc = 0xFFFF; // Initial value for CRC
+    uint16_t crc = CRC_INIT; // Initialize CRC with the specified initial value
 
-    // Process each byte of the message
     for (size_t i = 0; i < length; i++)
     {
-        crc ^= (uint16_t)message[i] << 8;
+        crc ^= (data[i] << (CRC_WIDTH - 8)); // Align the byte with CRC's high bit
 
-        for (int j = 0; j < 8; j++)
-        { // Process each bit
-            if (crc & 0x8000)
-            {
-                crc = (crc << 1) ^ POLYNOMIAL;
+        for (int bit = 0; bit < 8; bit++)
+        {
+            if (crc & (1 << (CRC_WIDTH - 1)))
+            {                            // If the leftmost bit is set
+                crc = (crc << 1) ^ POLY; // Shift left and XOR with polynomial
             }
             else
             {
-                crc <<= 1;
+                crc <<= 1; // Just shift left
             }
         }
     }
 
-    return crc;
-}
-
-// Function to verify CRC by adding it to the message and checking the result
-int verify_crc(const uint8_t *message, size_t length, uint16_t received_crc)
-{
-    uint16_t calculated_crc = calculate_crc(message, length);
-
-    return calculated_crc == received_crc;
+    crc &= 0x7FFF;              // Mask to 15 bits (CRC-15)
+    return crc ^ CRC_FINAL_XOR; // Apply the final XOR if required
 }
 
 int main()
 {
-    // Message to encode (corresponding to "Hello World!")
-    uint8_t message[] = {
-        0x48, 0x65, 0x6C, 0x6C, 0x6F, // "Hello"
-        0x20,                         // Space
-        0x57, 0x6F, 0x72, 0x6C, 0x64, // "World"
-        0x21, 0, 0                    // "!"
-    };
+    uint8_t data[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!'}; // Example data
+    size_t length = sizeof(data) / sizeof(data[0]);
 
-    size_t length = sizeof(message) / sizeof(message[0]);
-
-    // Calculate CRC for the message
-    uint16_t crc = calculate_crc(message, length);
-    printf("Calculated CRC: 0x%X\n", crc);
-
-    // Simulate transmission and verify the message with the CRC
-    if (verify_crc(message, length, crc))
-    {
-        printf("CRC validation passed.\n");
-    }
-    else
-    {
-        printf("CRC validation failed.\n");
-    }
+    uint16_t crc = crc15(data, length);
+    printf("CRC-15 checksum: 0x%04X\n", crc);
 
     return 0;
 }
