@@ -7,15 +7,11 @@
 
 int main()
 {
-    int message[MSG_WIDTH] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; //'A', 'B'   'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!',
+    uint8_t message[MSG_WIDTH] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; //'A', 'B'   'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!',
 
     printf("Original Hex: 0x%X\n Dec:%d\n", message, message);
 
     uint16_t sum = 0;
-    for (int i = 12; i < MSG_WIDTH; i++)
-    {
-    }
-
     for (int i = 0; i < MSG_WIDTH; i++)
     {
 
