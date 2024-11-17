@@ -1,44 +1,55 @@
+/**
+ * @file test.c
+ * @author Emil Ivarsson (emilivarsson92@gmail.com)
+ * @brief This program does CRC-15 checking to a message
+ * @version 0.1
+ * @date 2024-11-17
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #include <stdio.h>
 #include <stdint.h>
 
-#define POLY 0xC599          // CAN CRC-15 polynomial
-#define CRC_WIDTH 15         // Number of bits in CRC-15
-#define CRC_INIT 0x0000      // Initial CRC value for CAN CRC-15
-#define CRC_FINAL_XOR 0x0000 // Final XOR value if required
-static uint16_t sum = 0;
+#define POLYNOMIAL 0xC599
+#define CRC_WIDTH 15
+#define N 14
+#define BIT_SIZE 8
+#define BIT_SHIFT 1
+#define CRC_INIT 0x0000 // Initial CRC value
+
 uint16_t crc15(uint8_t *data, size_t length)
 {
     uint16_t crc = CRC_INIT; // Initialize CRC with the specified initial value
+    uint16_t sum = 0;
 
-    for (size_t i = 0; i < length; i++)
+    for (uint8_t i = 0; i < length; i++)
     {
-        crc ^= (data[i] << (CRC_WIDTH - 8)); // Align the byte with CRC's high bit
+        crc ^= (data[i] << (CRC_WIDTH - BIT_SIZE)); // Align the byte with CRC's high bit
 
-        for (int bit = 0; bit < 8; bit++)
+        for (uint8_t j = 0; j < BIT_SIZE; j++)
         {
-            if (crc & (1 << (CRC_WIDTH - 1)))
-            {                             // If the leftmost bit is set
-                sum += (crc << 1) ^ POLY; // Shift left and XOR with polynomial
+            if (crc & (BIT_SHIFT << (CRC_WIDTH - 1))) // If the leftmost bit is set
+            {
+                sum += (crc << BIT_SHIFT) ^ POLYNOMIAL; // Shift left and XOR with polynomial
             }
             else
             {
-                crc <<= 1; // Just shift left
+                crc <<= BIT_SHIFT; // Just shift left
             }
         }
     }
-    sum &= 0x7fff;
-    sum ^= CRC_FINAL_XOR;
-    crc &= 0x7FFF;              // Mask to 15 bits (CRC-15)
-    return crc ^ CRC_FINAL_XOR; // Apply the final XOR if required
+    return sum;
 }
 
-int main()
+int main(void)
 {
     uint8_t data[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!'}; // Example data
     size_t length = sizeof(data) / sizeof(data[0]);
 
-    uint16_t crc = crc15(data, length);
-    printf("CRC-15 checksum: 0x%X\n", sum);
+    uint16_t sum = crc15(data, length);
+    (void)printf("CRC-15 checksum: 0x%X\n", sum);
 
     return 0;
 }

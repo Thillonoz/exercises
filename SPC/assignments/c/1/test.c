@@ -9,6 +9,7 @@
  *
  */
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <ctype.h>
@@ -39,7 +40,7 @@ int main(void)
     if (scanf("%11s", input) != 1)
     {
         (void)printf(ERROR, FORMAT);
-        return 0;
+        exit(1);
     }
 
     // Checking that input is only numbers (except for the hyphen)
@@ -53,7 +54,7 @@ int main(void)
         if (!isdigit(input[i]))
         {
             (void)printf(ERROR, FORMAT);
-            return 0;
+            exit(1);
         }
     }
 
@@ -68,7 +69,7 @@ int main(void)
         if (!isValidDate(full_year, month, day))
         {
             (void)printf(ERROR, FORMAT);
-            return 0;
+            exit(1);
         }
 
         // Convert input characters to integers
