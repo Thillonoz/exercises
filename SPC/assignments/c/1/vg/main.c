@@ -22,7 +22,7 @@ bool verify_crc(const uint8_t *message, size_t length, uint16_t received_crc);
 
 int main(void)
 {
-    uint8_t message[N] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; // Example message
+    uint8_t message[N] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0x00, 0x00}; // Example message
     size_t length = sizeof(message) / sizeof(message[0]);
 
     // Compute CRC-15 for the message
@@ -39,17 +39,17 @@ int main(void)
 // Function to compute CRC-15 checksum
 uint16_t compute_crc(const uint8_t *message, size_t length)
 {
-    uint16_t crc = 0; // Initial CRC value (0 or all 1s is common)
+    uint16_t crc = 0x0000; // Initial CRC value (0 or all 1s is common)
 
     for (uint8_t i = 0; i < length; i++)
     {
-        uint8_t byte = message[i];
+        uint8_t byte = *(message + i);
+        uint8_t bit = byte & 1; // Extract the LSB
 
         // Process each bit in the byte, from LSB to MSB
         for (uint8_t j = 0; j < BIT_SIZE; j++)
         {
-            uint8_t bit = byte & 1; // Extract the LSB
-            byte >>= BIT_SHIFT;     // Shift to the next bit in the byte
+            bit >>= j; // Shift to the next bit in the byte
 
             // Update the CRC by shifting left by 1 and XORing with the polynomial
             if ((crc & (1 << N)) ^ (bit << N))
@@ -62,7 +62,6 @@ uint16_t compute_crc(const uint8_t *message, size_t length)
             }
         }
     }
-
     // Mask to ensure CRC is within the 15-bit range
     return crc & 0xFFF;
 }

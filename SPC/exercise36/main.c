@@ -13,7 +13,7 @@ int main(void)
     int length;
     (void)printf("Enter the length of the array: ");
     scanf("%d", &length);
-    int arrLen[length];
+    person_t *ptr 
 
     return 0;
 }
