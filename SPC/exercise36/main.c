@@ -9,61 +9,68 @@ typedef struct
     uint8_t age;
 } person_t;
 
-static void free_person(person_t **person);
-static person_t *create_person(const char *name, uint8_t age);
+static void free_persons(person_t **persons, uint8_t length);
 
 int main(void)
 {
-    int length;
-    (void)printf("Enter the length of the array: ");
-    scanf("%d", &length);
+    uint8_t length;
+    (void)printf("Enter the number of persons: ");
+    scanf("%u", &length);
 
-    person_t *person = (person_t *)malloc(sizeof(person_t));
-
-    printf("What's the person's name?\n");
-    scanf("%s", (person)->name);
-
-    printf("What's the person's age?\n");
-    scanf("%u", (person)->age);
-
-    create_person(person->name, person->age);
-    if (person == NULL)
+    person_t *persons = (person_t *)malloc(length * sizeof(person_t));
+    if (persons == NULL)
     {
-        printf("Failed to create Stefan\n");
-        exit(1);
+        printf("Memory allocation failed.\n");
+        return 1;
     }
-    printf("%s is %u years old.\n", person->name, person->age);
 
-    free_person(&person);
+    for (int i = 0; i < length; i++)
+    {
+        char buffer[100];
+        printf("Enter name of person %d: ", i + 1);
+        scanf("%s", buffer);
+        // Allocate memory for the name and copy the input
+        persons[i]
+            .name = (char *)malloc(strlen(buffer) + 1);
+        if (persons[i].name == NULL)
+        {
+            printf("Memory allocation failed for name.\n");
+            // Free previously allocated memory before exiting
+            for (int j = 0; j < i; j++)
+            {
+                free(persons[j].name);
+            }
+            free(persons);
+            return 1;
+        }
+        strcpy(persons[i].name, buffer);
+
+        printf("Enter age of person %d: ", i + 1);
+        scanf("%d", &persons[i].age);
+    }
+
+    // Print all persons
+    printf("\nList of Persons:\n");
+    for (int i = 0; i < length; i++)
+    {
+        printf("Person %d: Name = %s, Age = %d\n", i + 1, persons[i].name, persons[i].age);
+    }
+    // Free all allocated memory
+    for (int i = 0; i < length; i++)
+    {
+        free(persons[i].name);
+    }
+    free(persons);
 
     return 0;
 }
 
-static void free_person(person_t **person)
+static void free_persons(person_t **persons, uint8_t length)
 {
-    free((*person)->name);
-    free(*person);
-    *person = NULL;
-}
-
-static person_t *create_person(const char *name, uint8_t age)
-{
-    person_t *ptr = (person_t *)malloc(sizeof(person_t));
-    if (ptr != NULL)
+    // Free all allocated memory
+    for (size_t i = 0; i < length; i++)
     {
-        ptr->age = age;
-        size_t len = strlen(name) + 1;
-        ptr->name = (char *)malloc(len * sizeof(char));
-        if (ptr->name != NULL)
-        {
-            strncpy(ptr->name, name, len);
-        }
-        else
-        {
-            free(ptr);
-            ptr = NULL;
-        }
+        free(persons);
     }
-
-    return ptr;
+    free(persons);
 }

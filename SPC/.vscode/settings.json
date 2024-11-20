@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "math.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdlib.h": "c",
+        "bitset": "c",
+        "algorithm": "c",
+        "format": "c"
     }
 }
