@@ -16,7 +16,6 @@ void fillUsers(void)
     {
         struct user_t user
     }
-
 }
 
 int main()
