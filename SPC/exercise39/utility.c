@@ -1,64 +1,73 @@
 #include "utility.h"
 
-static uint8_t strLeng(const char *string)
+// Function to print string
+int printString(const char *string, uint8_t length)
 {
-    uint8_t i = 0;
-    if (string == NULL)
-    {
-        i = 0;
-    }
+    (void)printf("The unsorted string:\n");
 
-    while (string[i] != '\0')
+    for (uint8_t i = 0; i < length; i++)
     {
-        i++;
+        (void)printf("%c", string[i]);
     }
-    return i;
+    (void)printf("\n");
+    return 0;
 }
 
-void strSort(const char *string)
+int compareCharacters(char a, char b)
 {
-    uint8_t length = strLeng(string);
-    char sortedString[STRING_MAX_LEN];
-    uint16_t chr[length];
-    uint16_t temp = 0;
-
-    printf("Original string\n");
-    for (size_t i = 0; i < length; i++)
+    if (tolower(a) == tolower(b))
     {
-        chr[i] = string[i];
-        printf("%hhu\t", *(chr + i));
+        return a - b;
     }
 
-    for (size_t i = 0; i >= length; i++)
+    return tolower(a) - tolower(b);
+}
+
+int strSort(char *str, uint8_t length)
+{
+    for (int i = 0; i < length - 1; i++)
     {
-        for (size_t j = length; j >= 0; j--)
+        for (int j = 0; j < length - i - 1; j++)
         {
-            if (chr[i] > chr[i + j])
+            if (compareCharacters(str[j], str[j + 1]) > 0)
             {
-                temp = chr[j];
-                chr[j] = chr[i];
-                chr[i] = temp;
+                char temp = str[j];
+                str[j] = str[j + 1];
+                str[j + 1] = temp;
             }
         }
     }
+    return 0;
+}
 
-    // for (int i = 0; i <= ARRAY_SIZE; i++)
-    // {
-    //     for (int j = ARRAY_SIZE; j >= 0; j--)
-    //     {
-    //         if (*(arrptr + i) > *(arrptr + j))
-    //         {
-    //             temp = *(arrptr + j);
-    //             *(arrptr + j) = *(arrptr + i);
-    //             *(arrptr + i) = temp;
-    //         }
-    //     }
-    // }
+uint8_t lcm(uint8_t a, uint8_t b)
+{
+    uint8_t sumA = 0;
+    uint8_t sumB = 0;
+    uint8_t result = 0;
 
-    printf("\nSorted string\n");
-    for (size_t i = 0; i < length; i++)
+    for (uint8_t i = 2; i < a || i < b; i++)
     {
-        chr[i] = *(string + i);
-        printf("%hhu\t", *(chr + i));
+        sumA = a * i;
+        sumB = b * i;
+        if (sumA % a == 0 || sumB % b == 0)
+        {
+            if (sumA > sumB)
+            {
+                result = sumA;
+            }
+            else
+            {
+                result = sumB;
+            }
+            break;
+        }
     }
+
+    return result;
+}
+
+uint8_t gcd(uint8_t a, uint8_t b)
+{
+    return (a * b) / lcm(a, b);
 }

@@ -5,6 +5,14 @@
         "stdlib.h": "c",
         "bitset": "c",
         "algorithm": "c",
-        "format": "c"
+        "format": "c",
+        "array": "c",
+        "functions.h": "c",
+        "assert.h": "c",
+        "chrono": "c",
+        "variant": "c",
+        "utility.h": "c",
+        "string.h": "c",
+        "string_view": "c"
     }
 }
