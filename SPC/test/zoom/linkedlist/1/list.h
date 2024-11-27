@@ -3,10 +3,10 @@
 
 #include <stdbool.h>
 #include <assert.h>
-
+#include <stdio.h>
 #include <stdlib.h>
 
-typedef struct list list_t;
+typedef struct LinkedList list_t;
 
 /**
  * @brief This function is used to create a new list
@@ -70,6 +70,5 @@ bool list_search(list_t *lst, int value);
  * @param lst
  */
 void list_destroy(list_t *lst);
-
 
 #endif

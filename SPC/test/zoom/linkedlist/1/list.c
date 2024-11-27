@@ -1,6 +1,4 @@
 #include "list.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 typedef struct node
 {
@@ -8,9 +6,9 @@ typedef struct node
     struct node *next;
 } node_t;
 
-struct list
+struct LinkedList
 {
-    int counter;
+    int size;
     node_t *head;
 };
 
@@ -21,7 +19,7 @@ list_t *list_create(list_t *lst)
 
     if (ptr != NULL)
     {
-        ptr->counter = 0;
+        ptr->size = 0;
         ptr->head = NULL;
     }
     return ptr;
@@ -36,7 +34,7 @@ bool list_insert(list_t *lst, int value)
         if (ptr != NULL)
         {
             status = true;
-            lst->counter++;
+            lst->size++;
             ptr->data = value;
             ptr->next = NULL;
 
@@ -89,7 +87,7 @@ bool list_remove(list_t *lst, int value)
         if (current->data == value)
         {
             status = true;
-            lst->counter--;
+            lst->size--;
             if (previous == NULL)
             {
                 lst->head = lst->head->next;
@@ -104,14 +102,19 @@ bool list_remove(list_t *lst, int value)
             break;
         }
         previous = current;
-        current = current->next;
+        if (current->next != NULL)
+        {
+            current = current->next;
+        }
+
+       // current = current->next;
     }
     return status;
 }
 
 int list_available(list_t *lst)
 {
-    return lst->counter;
+    return lst->size;
 }
 
 bool list_change_data(list_t *lst, size_t n, int value)
@@ -164,5 +167,5 @@ void list_destroy(list_t *lst)
         lst->head = lst->head->next;
         free(cursor);
     }
-    lst->counter = 0;
+    lst->size = 0;
 }

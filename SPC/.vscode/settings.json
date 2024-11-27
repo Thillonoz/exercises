@@ -23,6 +23,8 @@
         "type_traits": "c",
         "utility": "c",
         "linkedlist.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "module.h": "c",
+        "list": "c"
     }
 }

@@ -1,29 +1,34 @@
 #include "list.h"
-#include <assert.h>
-
+#include <stdio.h>
 #define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
-
-void test_list_create_list(void);
 
 int main(void)
 {
     int data[6] = {2, 4, 8, 16, 32, 64};
 
-    assert(list_insert(10));
-    assert(list_insert(20));
-    assert(list_insert(30));
-    assert(list_insert(40));
+    list_t *mylist = list_create(mylist);
 
-    list_print();
-    assert(list_remove(30));
-    assert(3 == list_available());
-    list_print();
+    assert(list_insert(mylist, 10));
+    assert(list_insert(mylist, 20));
+    assert(list_insert(mylist, 30));
+    assert(list_insert(mylist, 40));
+    list_print(mylist);
 
-    assert(list_remove(10));
-    assert(2 == list_available());
-    list_print();
+    assert(list_remove(mylist, 30));
+    assert(3 == list_available(mylist));
+    list_print(mylist);
 
-    list_destroy();
+    assert(list_change_data(mylist, 2, 50));
+    list_print(mylist);
+
+    assert(list_remove(mylist, 10));
+    assert(2 == list_available(mylist));
+    list_print(mylist);
+
+    assert(list_search(mylist, 50));
+    printf("");
+
+    list_destroy(mylist);
 
     return 0;
 }
