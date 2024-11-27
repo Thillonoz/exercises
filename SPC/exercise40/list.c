@@ -60,6 +60,40 @@ bool list_insert(list_t *lst, int value)
     return (lst != NULL);
 }
 
+bool list_new_insert(list_t *lst, int value)
+{
+    bool status = false;
+    if (lst != NULL)
+    {
+        node_t *ptr = (node_t *)malloc(sizeof(node_t));
+        if (ptr != NULL)
+        {
+
+            status = true;
+            lst->counter++;
+            ptr->data = value;
+            ptr->next = NULL;
+
+            if (lst->head == NULL)
+            {
+                lst->head = ptr;
+            }
+            else
+            {
+                node_t *cursor = lst->head;
+                while (cursor->next != NULL)
+                {
+                    cursor = cursor->next;
+                }
+
+                cursor->next = ptr;
+            }
+        }
+    }
+
+    return (lst != NULL);
+}
+
 void list_print(list_t *lst)
 {
     if (lst == NULL)
@@ -131,6 +165,27 @@ bool list_change_data(list_t *lst, size_t n, int value)
     }
 
     return (cursor != NULL);
+}
+
+size_t list_get_data(list_t *lst, int n)
+{
+    size_t counter = 0;
+    size_t position = 1;
+    node_t *cursor = lst->head;
+
+    while (cursor != NULL)
+    {
+        counter++;
+        if (cursor->data == n)
+        {
+            position = counter;
+            break;
+        }
+
+        cursor = cursor->next;
+    }
+
+    return position;
 }
 
 bool list_search(list_t *lst, int value)

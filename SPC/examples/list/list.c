@@ -23,11 +23,11 @@ bool list_insert(int value)
         new_node->next = NULL;
         new_node->data = value;
 
-        if (head == NULL) // The list is empty
+        if (head == NULL)
         {
             head = new_node;
         }
-        else // Insert the node int the end of the list
+        else
         {
             node_t *current = head;
             while (current->next != NULL)

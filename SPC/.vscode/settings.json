@@ -25,6 +25,9 @@
         "linkedlist.h": "c",
         "stdbool.h": "c",
         "module.h": "c",
-        "list": "c"
+        "list": "c",
+        "list.h": "c",
+        "string": "c",
+        "span": "c"
     }
 }
