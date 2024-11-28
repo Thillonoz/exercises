@@ -28,6 +28,11 @@
         "list": "c",
         "list.h": "c",
         "string": "c",
-        "span": "c"
+        "span": "c",
+        "queue.h": "c",
+        "stack.h": "c",
+        "deque": "c",
+        "forward_list": "c",
+        "vector": "c"
     }
 }
