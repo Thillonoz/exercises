@@ -37,6 +37,10 @@ int main(void)
     (void)printf("Deleted an element:\t");
     test_list_print(mylist);
 
+    list_new_insert(mylist, data[2]);
+    (void)printf("Added element back:\t");
+    test_list_print(mylist);
+
     assert(list_remove(mylist, data[3]));
     assert(2 == list_available(mylist));
 

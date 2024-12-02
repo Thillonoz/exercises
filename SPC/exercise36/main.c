@@ -21,7 +21,7 @@ int main(void)
     if (persons == NULL)
     {
         printf("Memory allocation failed.\n");
-        return 1;
+        exit(1);
     }
 
     for (int i = 0; i < length; i++)
@@ -41,7 +41,7 @@ int main(void)
                 free(persons[j].name);
             }
             free(persons);
-            return 1;
+            exit(1);
         }
         strcpy(persons[i].name, buffer);
 

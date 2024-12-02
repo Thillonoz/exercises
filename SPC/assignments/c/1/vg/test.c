@@ -1,94 +1,74 @@
-/**
- * @file main.c
- * @author Emil Ivarsson (emilivarsson92@gmail.com)
- * @brief A program to calculate the CRC of given data and check and validate the checksum
- * @version 0.1
- * @date 2024-11-17
- *
- * @copyright Copyright (c) 2024
- *
- */
 #include <stdint.h>
 #include <stdio.h>
-#include <stdbool.h>
 
-#define POLYNOMIAL 0xC599
-#define N 14
-#define BIT_SIZE 8
-#define BIT_SHIFT 1
-
-uint16_t compute_crc(const uint8_t *message, size_t length);
-bool verify_crc(const uint8_t *message, size_t length, uint16_t received_crc);
-
-int main(void)
+// Function to calculate CRC
+uint16_t calculate_crc(const uint8_t *message, size_t length, uint16_t polynomial, uint8_t degree)
 {
-    uint8_t message[N] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; // Example message
-    size_t length = sizeof(message) / sizeof(message[0]);
-
-    // Compute CRC-15 for the message
-    uint16_t crc = compute_crc(message, length);
-    printf("CRC-15 checksum: 0x%X\n", crc);
-
-    // Verify the CRC
-    bool is_valid = verify_crc(message, length, crc);
-    printf("CRC verification: %s\n", is_valid ? "Passed" : "Failed");
-
-    printf("Computed CRC %X\n", crc);
-    crc = ~crc;
-    printf("Not computed CRC %X\n", crc);
-    printf("Message 13 %X\n", message[12]);
-    message[12] = 0xF4;
-    printf("Message 13 %X\n", message[12]);
-    printf("Message 14 %X\n", message[13]);
-    message[13] = 0x1C;
-    printf("Message 14 %X\n", message[13]);
-    printf("Whole message %X\n", &message);
-    uint16_t checkNumber = 0;
-    for (int i = 0; i < N; i++)
+    uint16_t crc = 0; // Initial CRC value
+    for (size_t i = 0; i < length; i++)
     {
-        checkNumber += message[i];
-    }
-    uint16_t mod = checkNumber % POLYNOMIAL;
-    printf("Modulus %hhu\n", mod);
-    printf("It's %s\n", checkNumber % POLYNOMIAL == 0 ? "Valid" : "Not valid");
-    return 0;
-}
-
-// Function to compute CRC-15 checksum
-uint16_t compute_crc(const uint8_t *message, size_t length)
-{
-    uint16_t crc = 0; // Initial CRC value (0 or all 1s is common)
-
-    for (uint8_t i = 0; i < length; i++)
-    {
-        uint8_t byte = message[i];
-
-        // Process each bit in the byte, from LSB to MSB
-        for (uint8_t j = 0; j < BIT_SIZE; j++)
+        // Process each byte from LSB to MSB
+        for (uint8_t bit = 0; bit < 8; bit++)
         {
-            uint8_t bit = byte & 1; // Extract the LSB
-            byte >>= BIT_SHIFT;     // Shift to the next bit in the byte
-
-            // Update the CRC by shifting left by 1 and XORing with the polynomial
-            if ((crc & (1 << N)) ^ (bit << N))
+            // Bring the next bit into CRC
+            uint8_t bit_in = (message[i] >> bit) & 1;
+            crc ^= (bit_in << (degree - 1));
+            // Perform polynomial division
+            if (crc & (1 << (degree - 1)))
             {
-                crc = (crc << BIT_SHIFT) ^ POLYNOMIAL;
+                crc = (crc << 1) ^ polynomial;
             }
             else
             {
-                crc <<= BIT_SHIFT;
+                crc <<= 1;
             }
         }
     }
-
-    // Mask to ensure CRC is within the 15-bit range
-    return crc & 0xFFF;
+    return crc & ((1 << degree) - 1); // Mask to CRC length
 }
 
-// Function to verify CRC on a message with appended checksum
-bool verify_crc(const uint8_t *message, size_t length, uint16_t received_crc)
+// Function to verify the message
+int verify_crc(const uint8_t *message, size_t length, uint16_t polynomial, uint8_t degree, uint16_t checksum)
 {
-    uint16_t computed_crc = compute_crc(message, length);
+    uint16_t crc = calculate_crc(message, length, polynomial, degree);
+    // Append the checksum and perform the final CRC calculation
+    for (int bit = degree - 1; bit >= 0; bit--)
+    {
+        uint8_t bit_in = (checksum >> bit) & 1;
+        crc ^= (bit_in << (degree - 1));
+        if (crc & (1 << (degree - 1)))
+        {
+            crc = (crc << 1) ^ polynomial;
+        }
+        else
+        {
+            crc <<= 1;
+        }
+    }
+    return (crc & ((1 << degree) - 1)) == 0; // Data is healthy if remainder is 0
+}
 
-    return (computed_crc == received_crc);
+int main()
+{
+    uint8_t message[] = {'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd', '!', 0, 0}; // Example message
+    size_t length = sizeof(message) / sizeof(message[0]);
+    uint16_t polynomial = 0xC599; // CRC-15 polynomial
+    uint8_t degree = 15;          // Degree of the polynomial
+
+    // Calculate the checksum
+    uint16_t checksum = calculate_crc(message, length, polynomial, degree);
+    printf("Calculated Checksum: 0x%X\n", checksum);
+
+    // Append the checksum to the message (virtually)
+    int is_healthy = verify_crc(message, length, polynomial, degree, checksum);
+    if (is_healthy)
+    {
+        printf("Data is healthy.\n");
+    }
+    else
+    {
+        printf("Data is corrupted.\n");
+    }
+
+    return 0;
 }
