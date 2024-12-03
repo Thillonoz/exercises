@@ -10,7 +10,7 @@ int main(void)
 
     if (firstFile == NULL)
     {
-        printf("Could not write to file that does not exist.\n");
+        printf("Could not write to file.\n");
         return 0;
     }
 

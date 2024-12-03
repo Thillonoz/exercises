@@ -33,6 +33,7 @@
         "stack.h": "c",
         "deque": "c",
         "forward_list": "c",
-        "vector": "c"
+        "vector": "c",
+        "time.h": "c"
     }
 }
