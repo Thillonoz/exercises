@@ -36,6 +36,8 @@
         "vector": "c",
         "time.h": "c",
         "text_encoding": "c",
-        "typeinfo": "c"
+        "typeinfo": "c",
+        "thread": "c",
+        "stdint.h": "c"
     }
 }
