@@ -34,6 +34,8 @@
         "deque": "c",
         "forward_list": "c",
         "vector": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "text_encoding": "c",
+        "typeinfo": "c"
     }
 }
