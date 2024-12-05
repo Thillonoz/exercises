@@ -2,13 +2,10 @@
 #define USERS_H
 
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <assert.h>
 #include <string.h>
-#include <strings.h>
 #include <ctype.h>
 
 #define MAX_NAME_LENGTH 32U

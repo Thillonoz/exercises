@@ -1,6 +1,6 @@
 #include "users.h"
 
-uint8_t count = 0;
+uint8_t count = 1;
 
 int main()
 {
@@ -46,7 +46,6 @@ int main()
                 (void)printf("Invalid input, try again\n");
                 clear_ibuffer();
             }
-            count++;
             clear_ibuffer();
             if (!fillUser(users, count, inputName, inputAge))
             {
@@ -56,17 +55,16 @@ int main()
                     (void)printf("Trying to create more than allowed users\n");
                     continue;
                 }
-                
             }
             if (!writeUsers(users, FILENAME, count, inputAge))
             {
                 printf("Failed to write user to file.\n");
-                clear_ibuffer();
             }
             else
             {
                 printf("User added successfully.\n");
             }
+            count++;
         }
         else if (choice == 'P' || choice == 'p')
         {
@@ -138,6 +136,11 @@ int main()
         else if (choice == 'E' || choice == 'e')
         {
             break;
+        }
+        else
+        {
+            (void)printf("Wrong input, try again\n");
+            clear_ibuffer();
         }
     }
 

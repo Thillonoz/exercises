@@ -19,7 +19,6 @@ bool fillUser(user_t *user, uint32_t ID, const char *name, uint8_t age)
     {
         user[ID].id = ID;
         strncpy(user[ID].name, name, MAX_NAME_LENGTH);
-
         user[ID].age = age;
     }
     return status;
@@ -52,14 +51,14 @@ bool writeUsers(const user_t *users, const char *filename, size_t ID, uint8_t ag
     bool status = true;
     if (users == NULL || filename == NULL || ID < 1 || ID > NUMBER_OF_USERS)
     {
-        printf("Invalid arguments to writeUsers.\n");
+        (void)printf("Invalid arguments to writeUsers.\n");
         status = false;
     }
 
     FILE *file = fopen(filename, "wb+");
     if (file == NULL)
     {
-        perror("Failed to open file");
+        (void)printf("Failed to open file");
         status = false;
     }
 
@@ -67,7 +66,7 @@ bool writeUsers(const user_t *users, const char *filename, size_t ID, uint8_t ag
     size_t offset = ID * sizeof(user_t);
     if (fseek(file, offset, SEEK_SET) != 0)
     {
-        perror("Failed to seek to position");
+        (void)printf("Failed to seek to position");
         fclose(file);
         status = false;
     }
@@ -125,7 +124,7 @@ bool updateUser(user_t *user, size_t ID, const char *name, uint8_t age)
                     break;
                 }
             }
-            (void)fclose(file);
+            fclose(file);
         }
     }
 
@@ -136,7 +135,7 @@ bool delete_user(user_t *user, uint32_t ID)
     bool status = true;
     if (ID < 1 || ID > NUMBER_OF_USERS)
     {
-        printf("Invalid ID. Must be between 1 and %u.\n", NUMBER_OF_USERS);
+        (void)printf("Invalid ID. Must be between 1 and %u.\n", NUMBER_OF_USERS);
         status = false;
     }
 
@@ -186,6 +185,6 @@ bool delete_user(user_t *user, uint32_t ID)
     }
 
     fclose(file);
-    printf("User with ID %u successfully deleted.\n", ID);
+    (void)printf("User with ID %u successfully deleted.\n", ID);
     return status;
 }
