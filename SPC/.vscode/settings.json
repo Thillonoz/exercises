@@ -38,6 +38,7 @@
         "text_encoding": "c",
         "typeinfo": "c",
         "thread": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "users.h": "c"
     }
 }

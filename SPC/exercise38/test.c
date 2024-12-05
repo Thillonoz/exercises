@@ -9,7 +9,7 @@ typedef struct
 int main(void)
 {
     user_t users[5] = {0};
-    user_t buffer;
+    user_t buffer[10];
     char username[10] = "Emil";
     user_t user1;
     user1.id = 1;
@@ -35,10 +35,10 @@ int main(void)
         printf("Failed to open for read.\n");
     }
     fread(&buffer, sizeof(user_t), 1, fileread);
-    printf("%s\n", buffer.name);
+    fgetc(fileread);
     fclose(fileread);
 
-    printf("%s\n", buffer.name);
+    printf("%s\n", buffer);
 
     return 0;
 }
