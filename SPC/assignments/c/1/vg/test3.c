@@ -10,6 +10,7 @@
 uint16_t calculate_crc(const uint8_t *message, size_t length)
 {
     uint16_t crc = 0; // Initialize CRC to 0
+    uint16_t checking = POLYNOMIAL;
 
     for (size_t i = 0; i < length; i++)
     {
@@ -18,20 +19,22 @@ uint16_t calculate_crc(const uint8_t *message, size_t length)
         for (int bit = 0; bit < 8; bit++)
         {
             //  bool bit_in = byte & 1;                       // Extract LSB of the current byte
-           // bool bit_out = crc & (1U << 16); // Extract MSB of the CRC
-
-            crc = crc >> 1; // Shift CRC left by 1 and mask to 15 bits
+            // bool bit_out = crc & (1U << 16); // Extract MSB of the CRC
+            crc = byte ^ checking; // Apply polynomial if input bit and output bit differ
+            byte >>= 1;
 
             // if (bit_in ^ bit_out)
             // {
 
             // }
-            crc ^= POLYNOMIAL; // Apply polynomial if input bit and output bit differ
+
+            //checking >>= 1;
+
             // byte >>= 1; // Shift byte right by 1 to process the next bit
         }
     }
 
-    return crc;
+    return crc & 0x7FF;
 }
 
 // Function to verify a message with its checksum
